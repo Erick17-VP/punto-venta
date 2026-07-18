@@ -1,50 +1,64 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
-
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  // Este estado guardará cuál pantalla/módulo está viendo el usuario
+  const [moduloActual, setModuloActual] = useState("ventas");
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <div className="app-container">
+      
+      {/* 🧭 MENÚ LATERAL (SIDEBAR) */}
+      <aside className="sidebar">
+        <h2>🛒 POS Venta</h2>
+        <nav>
+          <button 
+            className={moduloActual === "ventas" ? "active" : ""} 
+            onClick={() => setModuloActual("ventas")}
+          >
+            💻 Nueva Venta
+          </button>
+          <button 
+            className={moduloActual === "inventario" ? "active" : ""} 
+            onClick={() => setModuloActual("inventario")}
+          >
+            📦 Inventario
+          </button>
+          <button 
+            className={moduloActual === "clientes" ? "active" : ""} 
+            onClick={() => setModuloActual("clientes")}
+          >
+            👥 Clientes
+          </button>
+        </nav>
+      </aside>
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+      {/* 🖥️ CONTENIDO PRINCIPAL DINÁMICO */}
+      <main className="main-content">
+        
+        {moduloActual === "ventas" && (
+          <div className="module-card">
+            <h3>💻 Módulo de Ventas</h3>
+            <p>Aquí se escanearán los productos, se calculará el total y se procesará el cobro.</p>
+          </div>
+        )}
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+        {moduloActual === "inventario" && (
+          <div className="module-card">
+            <h3>📦 Gestión de Inventario</h3>
+            <p>Aquí podrás dar de alta nuevos productos, editar precios, códigos de barra y revisar el stock disponible.</p>
+          </div>
+        )}
+
+        {moduloActual === "clientes" && (
+          <div className="module-card">
+            <h3>👥 Control de Clientes</h3>
+            <p>Aquí administrarás el registro de clientes para aplicarles descuentos o créditos.</p>
+          </div>
+        )}
+
+      </main>
+    </div>
   );
 }
 
